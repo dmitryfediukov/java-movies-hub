@@ -65,12 +65,10 @@ public class MoviesApiTest {
 
     @Test
     void postMovie_whenValid_returnsCreatedMovie() throws Exception {
-        String json = """
-                {
-                  "title": "Аватар",
-                  "year": 2010
-                }
-                """;
+        String json = "{"
+                + "\"title\":\"Аватар\","
+                + "\"year\":2010"
+                + "}";
 
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies"))
@@ -117,12 +115,10 @@ public class MoviesApiTest {
 
     @Test
     void postMovie_whenTitleEmpty_returns422() throws Exception {
-        String json = """
-                {
-                  "title": "   ",
-                  "year": 2010
-                }
-                """;
+        String json = "{"
+                + "\"title\":\"   \","
+                + "\"year\":2010"
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "application/json");
 
@@ -137,12 +133,10 @@ public class MoviesApiTest {
     @Test
     void postMovie_whenTitleTooLong_returns422() throws Exception {
         String longTitle = "A".repeat(101);
-        String json = """
-                {
-                  "title": "%s",
-                  "year": 2010
-                }
-                """.formatted(longTitle);
+        String json = "{"
+                + "\"title\":\"" + longTitle + "\","
+                + "\"year\":2010"
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "application/json");
 
@@ -157,12 +151,10 @@ public class MoviesApiTest {
 
     @Test
     void postMovie_whenYearTooSmall_returns422() throws Exception {
-        String json = """
-                {
-                  "title": "Old movie",
-                  "year": 1800
-                }
-                """;
+        String json = "{"
+                + "\"title\":\"Old movie\","
+                + "\"year\":1800"
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "application/json");
 
@@ -177,12 +169,10 @@ public class MoviesApiTest {
     @Test
     void postMovie_whenYearTooLarge_returns422() throws Exception {
         int invalidYear = Year.now().getValue() + 2;
-        String json = """
-                {
-                  "title": "Future movie",
-                  "year": %d
-                }
-                """.formatted(invalidYear);
+        String json = "{"
+                + "\"title\":\"Future movie\","
+                + "\"year\":" + invalidYear
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "application/json");
 
@@ -196,12 +186,10 @@ public class MoviesApiTest {
 
     @Test
     void postMovie_whenContentTypeInvalid_returns415() throws Exception {
-        String json = """
-                {
-                  "title": "Inception",
-                  "year": 2010
-                }
-                """;
+        String json = "{"
+                + "\"title\":\"Аватар\","
+                + "\"year\":2010"
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "text/plain");
 
@@ -215,12 +203,10 @@ public class MoviesApiTest {
 
     @Test
     void postMovie_whenJsonInvalid_returns400() throws Exception {
-        String json = """
-                {
-                  "title": "Inception",
-                  "year":
-                }
-                """;
+        String json = "{"
+                + "\"title\":\"Аватар\","
+                + "\"year\":"
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "application/json");
 
@@ -449,12 +435,10 @@ public class MoviesApiTest {
     }
 
     private static void createMovie(String title, int year) throws Exception {
-        String json = """
-                {
-                  "title": "%s",
-                  "year": %d
-                }
-                """.formatted(title, year);
+        String json = "{"
+                + "\"title\":\"" + title + "\","
+                + "\"year\":" + year
+                + "}";
 
         HttpResponse<String> resp = sendPostMovie(json, "application/json");
         assertEquals(201, resp.statusCode(), "Подготовительный POST должен вернуть 201");
