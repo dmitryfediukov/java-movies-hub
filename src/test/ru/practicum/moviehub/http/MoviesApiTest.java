@@ -3,8 +3,8 @@ package ru.practicum.moviehub.http;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.practicum.moviehub.http.MoviesServer;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,6 +17,7 @@ import java.time.Year;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("Тесты API MovieHub")
 public class MoviesApiTest {
     private static final String BASE = "http://localhost:8080";
     private static MoviesServer server;
@@ -45,6 +46,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies возвращает пустой массив, если фильмов нет")
     void getMovies_whenEmpty_returnsEmptyArray() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies"))
@@ -64,6 +66,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies добавляет фильм при корректных данных")
     void postMovie_whenValid_returnsCreatedMovie() throws Exception {
         String json = "{"
                 + "\"title\":\"Аватар\","
@@ -91,6 +94,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies возвращает список с ранее добавленным фильмом")
     void getMovies_whenMovieAdded_returnsListWithMovie() throws Exception {
         createMovie("Inception", 2010);
 
@@ -114,6 +118,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies возвращает 422 при пустом названии")
     void postMovie_whenTitleEmpty_returns422() throws Exception {
         String json = "{"
                 + "\"title\":\"   \","
@@ -131,6 +136,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies возвращает 422 при слишком длинном названии")
     void postMovie_whenTitleTooLong_returns422() throws Exception {
         String longTitle = "A".repeat(101);
         String json = "{"
@@ -150,6 +156,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies возвращает 422, если год меньше 1888")
     void postMovie_whenYearTooSmall_returns422() throws Exception {
         String json = "{"
                 + "\"title\":\"Old movie\","
@@ -167,6 +174,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies возвращает 422, если год больше текущего года плюс один")
     void postMovie_whenYearTooLarge_returns422() throws Exception {
         int invalidYear = Year.now().getValue() + 2;
         String json = "{"
@@ -185,6 +193,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies возвращает 415 при неверном Content-Type")
     void postMovie_whenContentTypeInvalid_returns415() throws Exception {
         String json = "{"
                 + "\"title\":\"Аватар\","
@@ -202,6 +211,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("POST /movies возвращает 400 при некорректном JSON")
     void postMovie_whenJsonInvalid_returns400() throws Exception {
         String json = "{"
                 + "\"title\":\"Аватар\","
@@ -219,6 +229,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies/{id} возвращает фильм по существующему id")
     void getMovieById_whenExists_returnsMovie() throws Exception {
         createMovie("Inception", 2010);
 
@@ -242,6 +253,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies/{id} возвращает 404, если фильм не найден")
     void getMovieById_whenNotFound_returns404() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies/999"))
@@ -262,6 +274,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies/{id} возвращает 400, если id не число")
     void getMovieById_whenIdIsNotNumber_returns400() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies/abc"))
@@ -282,6 +295,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("DELETE /movies/{id} возвращает 204 при успешном удалении")
     void deleteMovie_whenExists_returns204() throws Exception {
         createMovie("Inception", 2010);
 
@@ -299,6 +313,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("DELETE /movies/{id} возвращает 404, если фильм не найден")
     void deleteMovie_whenNotFound_returns404() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies/999"))
@@ -319,6 +334,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("DELETE /movies/{id} возвращает 400, если id не число")
     void deleteMovie_whenIdIsNotNumber_returns400() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies/abc"))
@@ -339,6 +355,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies?year=YYYY возвращает фильмы указанного года")
     void getMoviesByYear_whenMatchesFound_returnsMovies() throws Exception {
         createMovie("Inception", 2010);
         createMovie("Interstellar", 2014);
@@ -364,6 +381,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies?year=YYYY возвращает пустой массив, если совпадений нет")
     void getMoviesByYear_whenNoMatches_returnsEmptyArray() throws Exception {
         createMovie("Inception", 2010);
 
@@ -385,6 +403,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("GET /movies?year=YYYY возвращает 400, если year не число")
     void getMoviesByYear_whenYearIsNotNumber_returns400() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies?year=abc"))
@@ -405,6 +424,7 @@ public class MoviesApiTest {
     }
 
     @Test
+    @DisplayName("Неподдерживаемый HTTP-метод возвращает 405")
     void methodNotAllowed_returns405() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies"))
